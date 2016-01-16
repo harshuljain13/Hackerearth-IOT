@@ -82,8 +82,10 @@ def login(request):
 def validate(request):
     kid = request.POST['klopid']
     password = request.POST['password']
-
-    prof = profiles.objects.get(klopid=kid)
+    try:
+        prof = profiles.objects.get(klopid=kid)
+    except profiles.DoesNotExist:
+        return render(request,'medwebapp/signup.html')
     if password == prof.password:
         try:
             klop= klopvalues.objects.get(klopid=request.POST['klopid'])
@@ -92,3 +94,23 @@ def validate(request):
         ecg = klop.ECG_pattern
         ecglist = map(int,ecg.split(" "))
         return render(request,'medwebapp/dispvalues.html',{'klop':klop, 'ecg':ecglist})
+    else:
+        return render(request,'medwebapp/signup.html')
+
+@csrf_exempt
+def signup(request):
+    kid = request.POST['klopid']
+    password = request.POST['password']
+    name = request.POST['name']
+    age = request.POST['age']
+    sg = request.POST['sg']
+    bp = request.POST['bp']
+    p = profiles(klopid = kid, password=password,name=name,age=age,sg=sg,bp=bp)
+    p.save()
+    try:
+        klop= klopvalues.objects.get(klopid=kid)
+    except klopvalues.DoesNotExist:
+        return HttpResponse(status=404)
+    ecg = klop.ECG_pattern
+    ecglist = map(int,ecg.split(" "))
+    return render(request,'medwebapp/dispvalues.html',{'klop':klop, 'ecg':ecglist})

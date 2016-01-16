@@ -17,5 +17,9 @@ class klopvalues(models.Model):
 class profiles(models.Model):
     klopid = models.CharField(max_length =10,primary_key=True)
     password=models.CharField(max_length=10)
+    name=models.CharField(max_length=20)
+    age = models.IntegerField(default=22)
+    sg = models.CharField(max_length=3)
+    bp = models.CharField(max_length=3)
 
     

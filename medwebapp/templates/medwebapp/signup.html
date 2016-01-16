@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-
-</body>
-</html>
+<form action="{% url 'signup' %}" method="post">
+{% csrf_token %}
+    Device ID: <input type="text" name="klopid" /><br>
+    Password: <input type="password" name="password" /><br>
+    Name : <input type="text" name="name" /><br>
+    Age : <input type="number" name="age" /><br>
+    Sugar patient: <input type="text" name="sg" /><br>
+    BP patient: <input type="text" name="bp" /><br>
+<input type="submit" value="Sign up" />
+</form>
