@@ -1,25 +1,50 @@
-<!DOCTYPE html>
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'medwebapp/style.css' %}" />
+
 <html>
 <head>
-<style>
-table {
-    border-collapse: collapse;
-    width: 100%;
+    <script type="text/javascript">
+window.onload = function () {
+	var chart = new CanvasJS.Chart("chartContainer",
+	{
+		zoomEnabled: true,
+		panEnabled: true,
+		title:{
+			text: "Electrocardiogram"
+		},
+		legend: {
+			horizontalAlign: "right",
+			verticalAlign: "center"
+		},
+		axisY:{
+			includeZero: false
+		},
+		data: data,  // random generator below
+    });
+	chart.render();
 }
 
-th, td {
-    text-align: left;
-    padding: 8px;
-}
+	var limit = 200;    //increase number of dataPoints by increasing this
 
-tr:nth-child(even){background-color: #f2f2f2}
+	var y = 0;
+	var data = []; var dataSeries = { type: "line" };
+	var dataPoints = [];
+	buffer = {{ecg}}
+	for (var i = 0; i < limit; i += 1) {
+ 		y = buffer[i];
+ 		dataPoints.push({
+ 			x: i,
+ 			y: y
+ 		});
+ 	}
+ 	dataSeries.dataPoints = dataPoints;
+ 	data.push(dataSeries);
 
-th {
-    background-color: #4CAF50;
-    color: white;
-}
-</style>
+ </script>
+    <script type="text/javascript" src="{% static 'medwebapp/canvasjs.min.js' %}"></script>
 </head>
+
 <body>
 
 <h2>Health Report</h2>
@@ -59,5 +84,8 @@ th {
   </tr>
 </table>
 
+<div id="chartContainer" style="height: 300px; width: 100%;">
+</div>
 </body>
+
 </html>

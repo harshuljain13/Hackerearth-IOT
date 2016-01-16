@@ -12,9 +12,10 @@ class klopvalues(models.Model):
     blood_pressure_dia = models.IntegerField(default=0)
     sugar_level = models.IntegerField(default=0)
     spo2_content = models.IntegerField(default=0)
+    ECG_pattern = models.CharField(max_length=4000)
 
-class relation(models.Model):
-    initid = models.CharField(max_length=10)
-    relatedid = models.CharField(max_length=10)
+class profiles(models.Model):
+    klopid = models.CharField(max_length =10,primary_key=True)
+    password=models.CharField(max_length=10)
 
     

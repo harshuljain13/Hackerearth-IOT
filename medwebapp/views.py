@@ -3,12 +3,11 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
-from .models import klopvalues
+from .models import klopvalues,profiles
 from .serializers import klopserializer
 
 
 # Create your views here.
-
 
 class JSONResponse(HttpResponse):
     def __init__(self,data,**kwargs):
@@ -69,8 +68,27 @@ def display_details(request):
         klop= klopvalues.objects.get(klopid=request.POST['klopid'])
     except klopvalues.DoesNotExist:
         return HttpResponse(status=404)
-    return render(request,'medwebapp/dispvalues.html',{'klop':klop})
+    ecg = klop.ECG_pattern
+    ecglist = map(int,ecg.split(" "))
+    return render(request,'medwebapp/dispvalues.html',{'klop':klop,'ecg':ecglist})
     #serialized_klop = klopserializer(klop)
     #return JSONResponse(serialized_klop.data)
 
+@csrf_exempt
+def login(request):
+    return render(request,'medwebapp/login.html')
 
+@csrf_exempt
+def validate(request):
+    kid = request.POST['klopid']
+    password = request.POST['password']
+
+    prof = profiles.objects.get(klopid=kid)
+    if password == prof.password:
+        try:
+            klop= klopvalues.objects.get(klopid=request.POST['klopid'])
+        except klopvalues.DoesNotExist:
+            return HttpResponse(status=404)
+        ecg = klop.ECG_pattern
+        ecglist = map(int,ecg.split(" "))
+        return render(request,'medwebapp/dispvalues.html',{'klop':klop, 'ecg':ecglist})
