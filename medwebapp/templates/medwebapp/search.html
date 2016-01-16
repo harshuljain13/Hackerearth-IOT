@@ -1,0 +1,5 @@
+<form action="{% url 'searchklop' %}" method="post">
+{% csrf_token %}
+    Device ID: <input type="text" name="klopid" />
+<input type="submit" value="Get details" />
+</form>
