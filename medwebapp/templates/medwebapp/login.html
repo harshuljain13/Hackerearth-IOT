@@ -1,6 +1,46 @@
-<form action="{% url 'validate' %}" method="post">
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'medwebapp/loginstyle.css' %}" />
+
+
+<html>
+<head>
+	<title>treasure for Health</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); },
+		false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+		<!--webfonts-->
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:600italic,400,300,600,700' rel='stylesheet' type='text/css'>
+		<!--//webfonts-->
+</head>
+<body>
+	 <!-----start-main---->
+	 <div class="main">
+		<div class="login-form">
+			<h1>Member Login</h1>
+					<div class="head">
+						<img src="{% static 'medwebapp/images/user.png' %}" alt=""/>
+					</div>
+				<form action="{% url 'validate' %}" method="post">
+                    {% csrf_token %}
+						<input type="text" class="text" value="klopid" name="klopid"  onfocus="this.value = '';" onblur="if
+						(this.value == '') {this.value = 'klopid';}" >
+						<input type="password" value="password" name="password" onfocus="this.value = '';" onblur="if
+						(this.value == '') {this.value = 'password';}">
+						<div class="submit">
+							<input type="submit" value="LOGIN" >
+					</div>
+					<p><a href="{% url 'signuppop' %}">Sign up</a></p>
+				</form>
+			</div>
+     </div>
+
+</body>
+</html>
+<!--<form action="{% url 'validate' %}" method="post">
 {% csrf_token %}
     Device ID: <input type="text" name="klopid" /><br>
     Password: <input type="password" name="password" /><br>
 <input type="submit" value="Login" />
-</form>
+</form>-->

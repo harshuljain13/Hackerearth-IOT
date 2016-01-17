@@ -102,7 +102,7 @@ def signup(request):
     kid = request.POST['klopid']
     password = request.POST['password']
     name = request.POST['name']
-    age = request.POST['age']
+    age = int(request.POST['age'])
     sg = request.POST['sg']
     bp = request.POST['bp']
     p = profiles(klopid = kid, password=password,name=name,age=age,sg=sg,bp=bp)
@@ -114,3 +114,7 @@ def signup(request):
     ecg = klop.ECG_pattern
     ecglist = map(int,ecg.split(" "))
     return render(request,'medwebapp/dispvalues.html',{'klop':klop, 'ecg':ecglist})
+
+@csrf_exempt
+def signup_show(request):
+    return render(request,'medwebapp/signup.html')

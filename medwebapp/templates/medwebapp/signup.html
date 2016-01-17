@@ -1,4 +1,52 @@
-<form action="{% url 'signup' %}" method="post">
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'medwebapp/loginstyle.css' %}" />
+
+
+<html>
+<head>
+	<title>Treasure for Health</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); },
+		false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+		<!--webfonts-->
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:600italic,400,300,600,700' rel='stylesheet' type='text/css'>
+		<!--//webfonts-->
+</head>
+<body>
+	 <!-----start-main---->
+	 <div class="main">
+		<div class="login-form">
+			<h1>Member Login</h1>
+					<div class="head">
+						<img src="{% static 'medwebapp/images/user.png' %}" alt=""/>
+					</div>
+				<form action="{% url 'signup' %}" method="post">
+                    {% csrf_token %}
+						<input type="text" class="text" value="klopid" name="klopid"  onfocus="this.value = '';" onblur="if
+						(this.value == '') {this.value = 'klopid';}" >
+						<input type="password" value="password" name="password" onfocus="this.value = '';" onblur="if
+						(this.value == '') {this.value = 'password';}">
+                    <input type="text" class="text" value="Name" name="name"  onfocus="this.value = '';" onblur="if
+						(this.value == '') {this.value = 'name';}" >
+                    <input type="text" class="text" value="Age" name="age"  onfocus="this.value = '';" onblur="if
+						(this.value == '') {this.value = 'age';}" >
+                    <input type="text" class="text" value="sg" name="sg"  onfocus="this.value = '';" onblur="if
+						(this.value == '') {this.value = 'sg';}" >
+                    <input type="text" class="text" value="bp" name="bp"  onfocus="this.value = '';" onblur="if
+						(this.value == '') {this.value = 'bp';}" >
+						<div class="submit">
+							<input type="submit" value="Sign up" >
+					</div>
+				</form>
+			</div>
+     </div>
+
+</body>
+</html>
+
+<!--<form action="{% url 'signup' %}" method="post">
 {% csrf_token %}
     Device ID: <input type="text" name="klopid" /><br>
     Password: <input type="password" name="password" /><br>
@@ -7,4 +55,4 @@
     Sugar patient: <input type="text" name="sg" /><br>
     BP patient: <input type="text" name="bp" /><br>
 <input type="submit" value="Sign up" />
-</form>
+</form>-->
