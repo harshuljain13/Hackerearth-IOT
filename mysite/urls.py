@@ -18,6 +18,6 @@ from django.conf.urls import url,include
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^klop/', include('medwebapp.urls')),
+    url(r'^halc/', include('medwebapp.urls')),
     url(r'^admin/', admin.site.urls),
 ]
