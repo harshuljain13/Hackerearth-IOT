@@ -11,4 +11,7 @@ pip install -r requirements.txt
 ## What to do to access the webapp
 ```
 go to http://<ipaddress of machine running the server>/halc/login
+enter 'harsh123' as id
+enter 'zero' as password
+click on submit
 ```
