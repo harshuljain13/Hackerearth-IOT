@@ -70,14 +70,12 @@ def display_details(request):
     try:
         klop= klopvalues.objects.get(klopid=request.POST['klopid'])
     except klopvalues.DoesNotExist:
-        return HttpResponse(status=404)
+        return HttpResponse('your IOT device is not active')
     ecg = klop.ECG_pattern
     ecglist = map(int,ecg.split(" "))
     return render(request,'medwebapp/dispvalues.html',{'klop':klop,'ecg':ecglist})
-    #serialized_klop = klopserializer(klop)
-    #return JSONResponse(serialized_klop.data)
 
-
+@csrf_exempt
 def register(request):
     context=RequestContext(request)
     registered=False
@@ -104,7 +102,7 @@ def register(request):
         profile_form=Userprofileform()
     return render(request,'medwebapp/register.html',{'registered':registered,'user_form':user_form,
                                                 'profile_form':profile_form},context)
-
+@csrf_exempt
 def user_login(request):
     context = RequestContext(request)
     if request.method=='POST':
@@ -119,7 +117,7 @@ def user_login(request):
                 klop= klopvalues.objects.get(klopid=profile.klopid)
 
             except klopvalues.DoesNotExist:
-                return HttpResponse(status=404)
+                return HttpResponse('your IOT device is not active')
 
             ecg = klop.ECG_pattern
             ecglist = map(int,ecg.split(" "))
