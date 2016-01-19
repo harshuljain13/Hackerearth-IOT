@@ -12,6 +12,6 @@ pip install -r requirements.txt
 ```
 go to http://<ipaddress of machine running the server>/halc/login
 enter 'harsh123' as id
-enter 'zero' as password
+enter 'grey' as password
 click on submit
 ```
