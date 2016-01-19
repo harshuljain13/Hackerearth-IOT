@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'medwebapp/loginstyle.css' %}" />
+
+<html lang="en">
+<head>
+    <title>HALC</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); },
+		false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+		<!--webfonts-->
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:600italic,400,300,600,700' rel='stylesheet' type='text/css'>
+		<!--//webfonts-->
+</head>
+<body>
+{% if registered %}
+<center>Thank you for registering</center>
+{% else %}
+	 <!-----start-main---->
+	 <div class="main">
+		<div class="login-form">
+			<h1>User signup</h1>
+					<div class="head">
+						<img src="{% static 'medwebapp/images/user.png' %}" alt=""/>
+					</div>
+				<form id="user_form" method="post" action="{% url 'register' %}"
+                enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ user_form.as_p }}
+            {{ profile_form.as_p }}
+            <!-- Provide a button to click to submit the form. -->
+            <input type="submit" name="submit" value="Register" />
+        </form>
+			</div>
+     </div>
+{% endif %}
+</body>
+</html>

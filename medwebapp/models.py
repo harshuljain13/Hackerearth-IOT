@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -22,4 +23,12 @@ class profiles(models.Model):
     sg = models.CharField(max_length=3)
     bp = models.CharField(max_length=3)
 
-    
+class Userprofile(models.Model):
+    user = models.OneToOneField(User)
+    klopid = models.CharField(max_length =10, primary_key=True)
+    name=models.CharField(max_length=20)
+    age = models.IntegerField(default=22)
+    sg = models.CharField(max_length=3)
+    bp = models.CharField(max_length=3)
+    def __unicode__(self):
+        return self.user.username

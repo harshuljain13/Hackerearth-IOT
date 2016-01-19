@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.template.context import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
-from .models import klopvalues,profiles
+from .models import klopvalues,profiles,Userprofile
 from .serializers import klopserializer
+from .forms import Userprofileform,Userform
+from django.contrib.auth import authenticate,login
 
 
 # Create your views here.
@@ -74,47 +77,56 @@ def display_details(request):
     #serialized_klop = klopserializer(klop)
     #return JSONResponse(serialized_klop.data)
 
-@csrf_exempt
-def login(request):
-    return render(request,'medwebapp/login.html')
 
-@csrf_exempt
-def validate(request):
-    kid = request.POST['klopid']
-    password = request.POST['password']
-    try:
-        prof = profiles.objects.get(klopid=kid)
-    except profiles.DoesNotExist:
-        return render(request,'medwebapp/signup.html')
-    if password == prof.password:
-        try:
-            klop= klopvalues.objects.get(klopid=request.POST['klopid'])
-        except klopvalues.DoesNotExist:
-            return HttpResponse(status=404)
-        ecg = klop.ECG_pattern
-        ecglist = map(int,ecg.split(" "))
-        return render(request,'medwebapp/dispvalues.html',{'klop':klop, 'ecg':ecglist})
+def register(request):
+    context=RequestContext(request)
+    registered=False
+    if request.method == 'POST':
+        user_form = Userform(data=request.POST)
+        profile_form=Userprofileform(data=request.POST)
+
+
+        if user_form.is_valid() and profile_form.is_valid():
+
+            user = user_form.save()
+            user.set_password(user.password)
+            user.save()
+
+            profile=profile_form.save(commit=False)
+            profile.user=user
+            profile.save()
+
+            registered = True
+        else:
+            print user_form.errors,profile_form.errors
     else:
-        return render(request,'medwebapp/signup.html')
+        user_form = Userform()
+        profile_form=Userprofileform()
+    return render(request,'medwebapp/register.html',{'registered':registered,'user_form':user_form,
+                                                'profile_form':profile_form},context)
 
-@csrf_exempt
-def signup(request):
-    kid = request.POST['klopid']
-    password = request.POST['password']
-    name = request.POST['name']
-    age = int(request.POST['age'])
-    sg = request.POST['sg']
-    bp = request.POST['bp']
-    p = profiles(klopid = kid, password=password,name=name,age=age,sg=sg,bp=bp)
-    p.save()
-    try:
-        klop= klopvalues.objects.get(klopid=kid)
-    except klopvalues.DoesNotExist:
-        return HttpResponse(status=404)
-    ecg = klop.ECG_pattern
-    ecglist = map(int,ecg.split(" "))
-    return render(request,'medwebapp/dispvalues.html',{'klop':klop, 'ecg':ecglist})
+def user_login(request):
+    context = RequestContext(request)
+    if request.method=='POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user:
+            login(request, user)
+            try:
 
-@csrf_exempt
-def signup_show(request):
-    return render(request,'medwebapp/signup.html')
+                profile = Userprofile.objects.get(user=user)
+                klop= klopvalues.objects.get(klopid=profile.klopid)
+
+            except klopvalues.DoesNotExist:
+                return HttpResponse(status=404)
+
+            ecg = klop.ECG_pattern
+            ecglist = map(int,ecg.split(" "))
+            return render(request,'medwebapp/dispvalues.html',{'klop':klop, 'ecg':ecglist})
+
+        else:
+            return HttpResponse('invalid login details')
+    else:
+        return render(request,'medwebapp/login.html',context)
+
