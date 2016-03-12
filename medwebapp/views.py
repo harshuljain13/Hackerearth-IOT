@@ -8,7 +8,18 @@ from rest_framework.renderers import JSONRenderer
 from .models import watchervalues,profiles,Userprofile
 from .serializers import watcherserializer
 from .forms import Userprofileform,Userform
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login,logout
+
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+cloudinary.config(
+  cloud_name = "dee0u22kn",
+  api_key = "268259648143926",
+  api_secret = "3EfStH6RsPn4C1cqGcytRP7IOxQ"
+)
 
 
 # Create your views here.
@@ -78,8 +89,11 @@ def register(request):
             user.set_password(user.password)
             user.save()
 
+            profile_url = cloudinary.uploader.upload(request.FILES['Profile-pic'])
+
             profile=profile_form.save(commit=False)
             profile.user=user
+            profile.image_url=profile_url['url']
             profile.save()
 
             registered = True
@@ -110,6 +124,11 @@ def user_login(request):
         return render(request,'medwebapp/login.html',context)
 
 @login_required
+def user_logout(request):
+    logout(request)
+    return redirect(user_login)
+
+@login_required
 def watcher_dashboard(request, watcher_id):
     try:
         profile = Userprofile.objects.get(watcherid=watcher_id)
@@ -122,4 +141,34 @@ def watcher_dashboard(request, watcher_id):
         return HttpResponse('your IOT device is not active')
 
 
+@login_required
+def watcher_profile(request,watcher_id):
+    context=RequestContext(request)
+    registered=False
+    watcher_profile = Userprofile.objects.get(watcherid=watcher_id)
+    if request.method == 'POST':
+        user_form = Userform(data=request.POST,instance=watcher_profile)
+        profile_form=Userprofileform(data=request.POST,instance=watcher_profile)
 
+
+        if user_form.is_valid() and profile_form.is_valid():
+
+            user = user_form.save()
+            user.set_password(user.password)
+            user.save()
+
+            profile_url = cloudinary.uploader.upload(request.FILES['Profile-pic'])
+
+            profile=profile_form.save(commit=False)
+            profile.user=user
+            profile.image_url=profile_url['url']
+            profile.save()
+
+            registered = True
+        else:
+            print user_form.errors,profile_form.errors
+    else:
+        user_form = Userform(instance=watcher_profile)
+        profile_form=Userprofileform(instance=watcher_profile)
+    return render(request,'medwebapp/register.html',{'registered':registered,'user_form':user_form,
+                                                'profile_form':profile_form},context)

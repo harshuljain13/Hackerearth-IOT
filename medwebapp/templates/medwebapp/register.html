@@ -31,7 +31,7 @@
             {% csrf_token %}
             {{ user_form.as_p }}
             {{ profile_form.as_p }}
-					<input type="file" value="Profile Pic"/>
+					<input type="file" name="Profile-pic"/>
             <!-- Provide a button to click to submit the form. -->
             <input type="submit" name="submit" value="Register" />
         </form>
