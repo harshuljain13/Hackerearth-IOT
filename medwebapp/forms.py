@@ -13,6 +13,6 @@ class Userform(forms.ModelForm):
 class Userprofileform(forms.ModelForm):
     class Meta:
         model=Userprofile
-        fields=('klopid','name','age','sg','bp')
+        fields=('watcherid','name','age','sg','bp')
 
 

@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-class klopvalues(models.Model):
-    klopid = models.CharField(max_length=10)
+class watchervalues(models.Model):
+    watcherid = models.CharField(max_length=10)
     heart_rate = models.IntegerField(default=0)
     resp_rate = models.IntegerField(default=0)
     blood_pressure_sys = models.IntegerField(default=0)
@@ -16,7 +16,7 @@ class klopvalues(models.Model):
     ECG_pattern = models.CharField(max_length=4000)
 
 class profiles(models.Model):
-    klopid = models.CharField(max_length =10,primary_key=True)
+    watcherid = models.CharField(max_length =10,primary_key=True)
     password=models.CharField(max_length=10)
     name=models.CharField(max_length=20)
     age = models.IntegerField(default=22)
@@ -25,7 +25,8 @@ class profiles(models.Model):
 
 class Userprofile(models.Model):
     user = models.OneToOneField(User)
-    klopid = models.CharField(max_length =10, primary_key=True)
+    image_url = models.CharField(max_length=1000, blank=True)
+    watcherid = models.CharField(max_length =10, primary_key=True)
     name=models.CharField(max_length=20)
     age = models.IntegerField(default=22)
     sg = models.CharField(max_length=3)

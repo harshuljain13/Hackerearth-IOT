@@ -1,11 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.template.context import RequestContext
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
-from .models import klopvalues,profiles,Userprofile
-from .serializers import klopserializer
+from .models import watchervalues,profiles,Userprofile
+from .serializers import watcherserializer
 from .forms import Userprofileform,Userform
 from django.contrib.auth import authenticate,login
 
@@ -20,60 +21,47 @@ class JSONResponse(HttpResponse):
 
 
 @csrf_exempt
-def klop_detail(request,kid):
+def watcher_restapi(request,watcher_id):
 
-    ##http http://127.0.0.1:8000/klop/detail/kid/
+    ##http http://127.0.0.1:8000/watcher/watcher_id/
     if request.method == 'GET':
         try:
-            klop= klopvalues.objects.get(klopid=kid)
-        except klopvalues.DoesNotExist:
+            watcher= watchervalues.objects.get(watcherid=watcher_id)
+        except watchervalues.DoesNotExist:
             return HttpResponse(status=404)
-        serialized_klop = klopserializer(klop)
-        return JSONResponse(serialized_klop.data)
+        serialized_watcher = watcherserializer(watcher)
+        return JSONResponse(serialized_watcher.data)
 
-    ##http --json post http://127.0.0.1:8000/klop/detail/kid/ name=value name2=value2
+    ##http --json post http://127.0.0.1:8000/watcher/watcher_id/ name=value name2=value2
     if request.method == 'POST':
         data = JSONParser().parse(request)
-        klop_serialized = klopserializer(data=data)
+        watcher_serialized = watcherserializer(data=data)
 
-        if klop_serialized.is_valid():
-            klop_serialized.save()
+        if watcher_serialized.is_valid():
+            watcher_serialized.save()
             return HttpResponse(status=200)
 
-    ##http --json put http://127.0.0.1:8000/klop/detail/kid/ name=value name2=value2
+    ##http --json put http://127.0.0.1:8000/watcher/watcher_id/ name=value name2=value2
     if request.method == 'PUT':
         try:
-            klop= klopvalues.objects.get(klopid=kid)
-        except klopvalues.DoesNotExist:
+            watcher= watchervalues.objects.get(watcherid=watcher_id)
+        except watchervalues.DoesNotExist:
             return HttpResponse(status=404)
         data = JSONParser().parse(request)
-        klop_serialized = klopserializer(klop,data=data)
-        if klop_serialized.is_valid():
-            klop_serialized.save()
+        watcher_serialized = watcherserializer(watcher,data=data)
+        if watcher_serialized.is_valid():
+            watcher_serialized.save()
             return HttpResponse(status=200)
 
-    ##http delete http://127.0.0.1:8000/klop/detail/kid/
+    ##http delete http://127.0.0.1:8000/watcher/watcher_id/
     if request.method == 'DELETE':
         try:
-            klop= klopvalues.objects.get(klopid=kid)
-        except klopvalues.DoesNotExist:
+            watcher= watchervalues.objects.get(watcherid=watcher_id)
+        except watchervalues.DoesNotExist:
             return HttpResponse(status=404)
-        klop.delete()
+        watcher.delete()
         return HttpResponse(status=204)
 
-@csrf_exempt
-def detail_search(request):
-    return render(request,'medwebapp/search.html')
-
-@csrf_exempt
-def display_details(request):
-    try:
-        klop= klopvalues.objects.get(klopid=request.POST['klopid'])
-    except klopvalues.DoesNotExist:
-        return HttpResponse('your IOT device is not active')
-    ecg = klop.ECG_pattern
-    ecglist = map(int,ecg.split(" "))
-    return render(request,'medwebapp/dispvalues.html',{'klop':klop,'ecg':ecglist})
 
 @csrf_exempt
 def register(request):
@@ -102,6 +90,7 @@ def register(request):
         profile_form=Userprofileform()
     return render(request,'medwebapp/register.html',{'registered':registered,'user_form':user_form,
                                                 'profile_form':profile_form},context)
+
 @csrf_exempt
 def user_login(request):
     context = RequestContext(request)
@@ -111,20 +100,26 @@ def user_login(request):
         user = authenticate(username=username, password=password)
         if user:
             login(request, user)
-            try:
-
-                profile = Userprofile.objects.get(user=user)
-                klop= klopvalues.objects.get(klopid=profile.klopid)
-
-            except klopvalues.DoesNotExist:
-                return HttpResponse('your IOT device is not active')
-
-            ecg = klop.ECG_pattern
-            ecglist = map(int,ecg.split(" "))
-            return render(request,'medwebapp/dispvalues.html',{'klop':klop, 'ecg':ecglist})
+            profile = Userprofile.objects.get(user=user)
+            return redirect(watcher_dashboard,watcher_id=profile.watcherid)
 
         else:
             return HttpResponse('invalid login details')
+
     else:
         return render(request,'medwebapp/login.html',context)
+
+@login_required
+def watcher_dashboard(request, watcher_id):
+    try:
+        profile = Userprofile.objects.get(watcherid=watcher_id)
+        watcher= watchervalues.objects.get(watcherid=watcher_id)
+        ecg = watcher.ECG_pattern
+        ecglist = map(int,ecg.split(" "))
+        return render(request,'medwebapp/dashboard.html',{'watcher':watcher, 'ecg':ecglist, 'profile':profile})
+
+    except watchervalues.DoesNotExist:
+        return HttpResponse('your IOT device is not active')
+
+
 

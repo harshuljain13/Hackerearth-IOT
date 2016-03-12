@@ -24,8 +24,8 @@
 					</div>
 				<form action="{% url 'signup' %}" method="post">
                     {% csrf_token %}
-						<input type="text" class="text" value="klopid" name="klopid"  onfocus="this.value = '';" onblur="if
-						(this.value == '') {this.value = 'klopid';}" >
+						<input type="text" class="text" value="watcherid" name="watcherid"  onfocus="this.value = '';" onblur="if
+						(this.value == '') {this.value = 'watcherid';}" >
 						<input type="password" value="password" name="password" onfocus="this.value = '';" onblur="if
 						(this.value == '') {this.value = 'password';}">
                     <input type="text" class="text" value="Name" name="name"  onfocus="this.value = '';" onblur="if
@@ -48,7 +48,7 @@
 
 <!--<form action="{% url 'signup' %}" method="post">
 {% csrf_token %}
-    Device ID: <input type="text" name="klopid" /><br>
+    Device ID: <input type="text" name="watcherid" /><br>
     Password: <input type="password" name="password" /><br>
     Name : <input type="text" name="name" /><br>
     Age : <input type="number" name="age" /><br>
