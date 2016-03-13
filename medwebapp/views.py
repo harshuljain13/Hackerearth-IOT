@@ -180,6 +180,16 @@ def watcher_dashboard(request, watcher_id):
         return HttpResponse('your IOT device is not active')
 
 
+def watcher_dashboard_notactive(request, watcher_id):
+    try:
+        profile = Userprofile.objects.get(watcherid=watcher_id)
+        watcher= watchervalues.objects.get(watcherid=watcher_id)
+        ecg = watcher.ECG_pattern
+        ecglist = map(int,ecg.split(" "))
+        return render(request,'medwebapp/dashboardnotactive.html',{'watcher':watcher, 'ecg':ecglist, 'profile':profile})
+
+    except watchervalues.DoesNotExist:
+        return HttpResponse('your IOT device is not active')
 
 @login_required
 def watcher_info(request, watcher_id):
