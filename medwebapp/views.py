@@ -9,6 +9,7 @@ from .models import watchervalues,profiles,Userprofile
 from .serializers import watcherserializer
 from .forms import Userprofileform,Userform
 from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.models import User
 
 
 import cloudinary
@@ -142,12 +143,14 @@ def watcher_dashboard(request, watcher_id):
 
 
 @login_required
-def watcher_profile(request,watcher_id):
+def profile_update(request,watcher_id):
     context=RequestContext(request)
-    registered=False
+    updated=False
+
     watcher_profile = Userprofile.objects.get(watcherid=watcher_id)
+    user_instance = User.objects.get(username=watcher_profile.user)
     if request.method == 'POST':
-        user_form = Userform(data=request.POST,instance=watcher_profile)
+        user_form = Userform(data=request.POST,instance=user_instance)
         profile_form=Userprofileform(data=request.POST,instance=watcher_profile)
 
 
@@ -157,18 +160,21 @@ def watcher_profile(request,watcher_id):
             user.set_password(user.password)
             user.save()
 
-            profile_url = cloudinary.uploader.upload(request.FILES['Profile-pic'])
-
             profile=profile_form.save(commit=False)
             profile.user=user
-            profile.image_url=profile_url['url']
+
+            #if request.FILES['Profile-pic']:
+             #   profile_url = cloudinary.uploader.upload(request.FILES['Profile-pic'])
+             #   profile.image_url=profile_url['url']
+
             profile.save()
 
-            registered = True
+            updated = True
+            return redirect(user_login)
         else:
             print user_form.errors,profile_form.errors
     else:
-        user_form = Userform(instance=watcher_profile)
+        user_form = Userform(instance=user_instance)
         profile_form=Userprofileform(instance=watcher_profile)
-    return render(request,'medwebapp/register.html',{'registered':registered,'user_form':user_form,
-                                                'profile_form':profile_form},context)
+        return render(request,'medwebapp/updateprofile.html',{'updated':updated,'user_form':user_form,
+                                                'profile_form':profile_form, 'watcher_profile': watcher_profile},context)

@@ -5,10 +5,16 @@ from .models import Userprofile
 
 class Userform(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
+    def __init__(self, *args, **kwargs):
+            super(Userform,self).__init__(*args, **kwargs)
 
+            for fieldname in ['username', 'email', 'password']:
+                self.fields[fieldname].help_text = None
     class Meta:
         model = User
-        fields = ('username','email','password',)
+        fields = ('username','email','password')
+
+
 
 class Userprofileform(forms.ModelForm):
     class Meta:
