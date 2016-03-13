@@ -20,8 +20,8 @@ class profiles(models.Model):
     password=models.CharField(max_length=10)
     name=models.CharField(max_length=20)
     age = models.IntegerField(default=22)
-    sg = models.CharField(max_length=3)
-    bp = models.CharField(max_length=3)
+    sg = models.IntegerField(default=0)
+    bp = models.IntegerField(default=0)
 
 class Userprofile(models.Model):
     user = models.OneToOneField(User)
