@@ -10,5 +10,7 @@ urlpatterns = [
     url(r'^watcher/(?P<watcher_id>\w+[0-9]+)/$',views.watcher_restapi),
 
     url(r'^watcher/dashboard/(?P<watcher_id>\w+[0-9]+)/$',views.watcher_dashboard,name='watcherdashboard'),
+    url(r'^watcher/info/(?P<watcher_id>\w+[0-9]+)/$',views.watcher_info,name='watcherinfo'),
+    url(r'^watcher/share/(?P<watcher_id>\w+[0-9]+)/$',views.watcher_share,name='watchershare'),
     url(r'^watcher/profile/(?P<watcher_id>\w+[0-9]+)/$',views.profile_update,name='profileupdate'),
 ]
