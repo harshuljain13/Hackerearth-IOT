@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
-import dj_database_url
 from django.core.wsgi import get_wsgi_application
 from whitenoise.django import DjangoWhiteNoise
 
@@ -86,9 +85,9 @@ DATABASES = {
     }
 }
 
-#DATABASES = dict()
-#DATABASES['default'] =  dj_database_url.config()
-#DATABASES['default']['CONN_MAX_AGE'] = 500
+import dj_database_url
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
 
 
 # Password validation
