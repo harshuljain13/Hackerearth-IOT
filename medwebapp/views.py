@@ -236,21 +236,12 @@ def watcher_advicelist(request, watcher_id):
         return HttpResponse('your IOT device is not active')
 
 
-@login_required
 def watcher_giveadvice(request, watcher_id):
-    try:
-        profile = Userprofile.objects.get(watcherid=watcher_id)
-        watcher= watchervalues.objects.get(watcherid=watcher_id)
-        try:
-            advice_objs = watcheradvicelist.objects.all().filter(watcherid=watcher_id)
-            testavailable = True
-            return render(request,'medwebapp/advicelist.html',{'watcher':watcher,
-                                                               'profile':profile, 'available':testavailable,
-                                                               'advice_objs':advice_objs})
-        except:
-            testavailable = False
-            return render(request,'medwebapp/advicelist.html',{'watcher':watcher,
-                                                               'profile':profile, 'available':testavailable})
-
-    except watchervalues.DoesNotExist:
-        return HttpResponse('your IOT device is not active')
+    profile = Userprofile.objects.get(watcherid=watcher_id)
+    watcher = watchervalues.objects.get(watcherid=watcher_id)
+    if request.method == 'POST':
+        given_advice = request.POST['advice']
+        watcheradvicelist(watcherid=watcher_id, watcheradvice=given_advice).save()
+        return render(request,'medwebapp/adviceform.html',{'watcher':watcher,'profile':profile})
+    else:
+        return render(request,'medwebapp/adviceform.html',{'watcher':watcher,'profile':profile})

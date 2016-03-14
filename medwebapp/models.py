@@ -29,4 +29,4 @@ class Userprofile(models.Model):
 
 class watcheradvicelist(models.Model):
     watcherid = models.CharField(max_length=10)
-    watcheradvice = models.CharField(max_length=2000)
+    watcheradvice = models.CharField(max_length=2000,blank=True)

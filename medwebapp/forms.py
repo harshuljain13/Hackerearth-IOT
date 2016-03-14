@@ -1,7 +1,7 @@
 __author__ = 'h_hack'
 from django import forms
 from django.contrib.auth.models import User
-from .models import Userprofile
+from .models import Userprofile,watcheradvicelist
 
 class Userform(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -20,5 +20,3 @@ class Userprofileform(forms.ModelForm):
     class Meta:
         model=Userprofile
         fields=('watcherid','name','age','sg','bp')
-
-

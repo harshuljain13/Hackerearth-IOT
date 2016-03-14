@@ -123,7 +123,7 @@
         <div class="col-sm-3 col-md-2">
 
           <ul class="nav nav-pills nav-stacked" role="tablist">
-            <li class="active" style=" background-color:#21B2A6;"><a href="{% url 'watcherdashboard' profile.watcherid %}">Patient's Activity</a></li>
+            <li class="active" style=" background-color:#21B2A6;"><a href="{% url 'watcherdashboardnotactive' profile.watcherid %}">Patient's Activity</a></li>
             <li><a href="{% url 'gadvice' profile.watcherid %}">Give an Advice</a></li>
           </ul>
 
@@ -143,11 +143,12 @@
                           <h3 class="knob-title">SPO2 Level</h3>
                           <div id="radial3"></div>
                       </div>
-                  </div>
-
-                  <h3>Electrocardiogram</h3>
+                      <h3>Electrocardiogram</h3>
                   <div id="chartContainer" style="height: 300px; width: 100%;"></div>
                   <hr/>
+                  </div>
+
+
               </div>
 
 
