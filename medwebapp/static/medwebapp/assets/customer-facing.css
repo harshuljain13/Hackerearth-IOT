@@ -51,11 +51,14 @@ img {
 }
 
 
-
-.navbar-collapse {
+.navbar {
+margin-bottom: 0px;
+border: 0px solid transparent;
+}
+.navbar-default {
   background: #21B2A6;
   padding-left: 40px;
-  padding-right: 50px; }
+  padding-right: 40px; }
 
 .navbar-nav > li > a,
 .navbar a.navbar-brand {
