@@ -50,15 +50,16 @@ img {
   text-align: left;
 }
 
-
 .navbar {
-margin-bottom: 0px;
-border: 0px solid transparent;
-}
+    position: relative;
+    min-height: 50px;
+    margin-bottom: 0px;
+    border: 0px solid transparent;}
+
 .navbar-default {
   background: #21B2A6;
   padding-left: 40px;
-  padding-right: 40px; }
+  padding-right: 50px; }
 
 .navbar-nav > li > a,
 .navbar a.navbar-brand {
@@ -73,3 +74,18 @@ border: 0px solid transparent;
 .tabs-left > .nav-pills .active > a:focus {
   background-color: #21B2A6;
   border-color: #21B2A6; }
+
+@media (max-width: 600px) {
+  .img-media{
+  width:40%;
+  height:auto;
+  }
+}
+
+
+@media (min-width: 600px) {
+  .img-media{
+  width:100%;
+  height:auto;
+  }
+}
