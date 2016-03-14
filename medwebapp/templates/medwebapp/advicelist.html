@@ -37,7 +37,7 @@
 
         #radial1, #radial2, #radial3, #radial4 {
             width: 40%;
-            height: 200px;
+            height: 500px;
             box-sizing: border-box;
             float: center;
         }
@@ -96,6 +96,10 @@
     <ul class="nav navbar-nav navbar-left">
       <li><img src="{% static 'medwebapp/images/halclogo.png' %}"></li>
     </ul>
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="{% url 'profileupdate' profile.watcherid %}">Settings</a></li>
+      <li><a href="{% url 'logout' %}">Logout</a></li>
+    </ul>
   </div>
 
   <div class="banner">
@@ -123,38 +127,29 @@
         <div class="col-sm-3 col-md-2">
 
           <ul class="nav nav-pills nav-stacked" role="tablist">
-            <li class="active" style=" background-color:#21B2A6;"><a href="{% url 'watcherdashboard' profile.watcherid %}">Patient's Activity</a></li>
-            <li><a href="{% url 'gadvice' profile.watcherid %}">Give an Advice</a></li>
+            <li><a href="{% url 'watcherdashboard' profile.watcherid %}">My Activity</a></li>
+            <li><a href="{% url 'watcherinfo' profile.watcherid %}">Device Info</a></li>
+            <li><a href="{% url 'watchershare' profile.watcherid %}">Share</a></li>
+            <li class="active" style="background-color:#21B2A6;"><a href="{% url 'advicelist' profile.watcherid %}">My Advices</a></li>
           </ul>
 
         </div>
-
-              <div class="col-sm-9 col-md-10">
-                  <div class="row">
-                      <div class="col-sm-4">
-                          <h3 class="knob-title">Resting Heart Rate</h3>
-                          <div id="radial1"></div>
-                      </div>
-                      <div class="col-sm-4">
-                          <h3 class="knob-title">Respiration rate</h3>
-                          <div id="radial4"></div>
-                      </div>
-                      <div class="col-sm-4">
-                          <h3 class="knob-title">SPO2 Level</h3>
-                          <div id="radial3"></div>
-                      </div>
-                  </div>
-
-                  <h3>Electrocardiogram</h3>
-                  <div id="chartContainer" style="height: 300px; width: 100%;"></div>
-                  <hr/>
-              </div>
-
-
+{% if available %}
+          {% for advice_obj in advice_objs %}
+          <div class="col-sm-9 col-md-10">
+              Advice: {{advice_obj.watcheradvice}}
+              <br>
+          </div>
+          {% endfor %}
+{% endif %}
       </div>
-
     </div>
   </div>
+
+
+
+
+
 
   <div class="footer">
     <div class="container">
@@ -174,113 +169,9 @@
   <script type="text/javascript" src="{% static 'medwebapp/assets/js/meta.js' %}"></script>
 
   <script type="text/javascript" src="{% static 'medwebapp/assets/customer-facing.js' %}"></script>
-<script language="JavaScript">
 
-    var radial1=d3.select(document.getElementById('radial1'));
-    var radial2=d3.select(document.getElementById('radial2'));
-    var radial3=d3.select(document.getElementById('radial3'));
-    var radial4=d3.select(document.getElementById('radial4'));
-
-    start();
-
-    function onClick1() {
-        deselect();
-        radial1.attr("class","selectedRadial");
-    }
-
-    function onClick2() {
-        deselect();
-        radial2.attr("class","selectedRadial");
-    }
-
-    function onClick3() {
-        deselect();
-        radial3.attr("class","selectedRadial");
-    }
-
-    function onClick4() {
-        deselect();
-        radial4.attr("class","selectedRadial");
-    }
-
-    function labelFunction(val,min,max) {
-
-    }
-
-    function deselect() {
-        radial1.attr("class","radial");
-        radial2.attr("class","radial");
-        radial3.attr("class","radial");
-        radial4.attr("class","radial");
-    }
-
-    function start() {
-
-        var rp1 = radialProgress(document.getElementById('radial1'))
-                .onClick(onClick1)
-                .diameter(200)
-                .value({{watcher.heart_rate}})
-                .render();
-
-        var rp2 = radialProgress(document.getElementById('radial2'))
-                .label("RADIAL 2")
-                .onClick(onClick2)
-                .diameter(200)
-                .value(132)
-                .render();
-
-        var rp3 = radialProgress(document.getElementById('radial3'))
-                .onClick(onClick3)
-                .diameter(200)
-                .value({{watcher.spo2_content}})
-                .render();
-
-        var rp4 = radialProgress(document.getElementById('radial4'))
-                .onClick(onClick4)
-                .diameter(200)
-                .value({{watcher.resp_rate}})
-                .render();
-    }
-
-    </script>
 
 <script type="text/javascript" src="{% static 'medwebapp/canvasjs.min.js' %}"></script>
-<script type="text/javascript">
-window.onload = function () {
-	var chart = new CanvasJS.Chart("chartContainer",
-	{
-		zoomEnabled: true,
-		panEnabled: true,
-		animationEnabled: true,
-		legend: {
-			horizontalAlign: "right",
-			verticalAlign: "center"
-		},
-		axisY:{
-			includeZero: false
-		},
-		data: data,  // random generator below
-    });
-	chart.render();
-}
-
-	var limit = 200;    //increase number of dataPoints by increasing this
-
-	var y = 0;
-	var data = []; var dataSeries = { type: "line" };
-	var dataPoints = [];
-	buffer = {{ecg}}
-	for (var i = 0; i < limit; i += 1) {
- 		y = buffer[i];
- 		dataPoints.push({
- 			x: i,
- 			y: y
- 		});
- 	}
- 	dataSeries.dataPoints = dataPoints;
- 	data.push(dataSeries);
-
- 	</script>
 
 </body>
 </html>

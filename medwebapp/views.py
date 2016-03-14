@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
-from .models import watchervalues,profiles,Userprofile
+from .models import watchervalues,Userprofile,watcheradvicelist
 from .serializers import watcherserializer
 from .forms import Userprofileform,Userform
 from django.contrib.auth import authenticate,login,logout
@@ -212,6 +212,45 @@ def watcher_share(request, watcher_id):
         ecg = watcher.ECG_pattern
         ecglist = map(int,ecg.split(" "))
         return render(request,'medwebapp/share.html',{'watcher':watcher, 'ecg':ecglist, 'profile':profile})
+
+    except watchervalues.DoesNotExist:
+        return HttpResponse('your IOT device is not active')
+
+@login_required
+def watcher_advicelist(request, watcher_id):
+    try:
+        profile = Userprofile.objects.get(watcherid=watcher_id)
+        watcher= watchervalues.objects.get(watcherid=watcher_id)
+        try:
+            advice_objs = watcheradvicelist.objects.all().filter(watcherid=watcher_id)
+            testavailable = True
+            return render(request,'medwebapp/advicelist.html',{'watcher':watcher,
+                                                               'profile':profile, 'available':testavailable,
+                                                               'advice_objs':advice_objs})
+        except:
+            testavailable = False
+            return render(request,'medwebapp/advicelist.html',{'watcher':watcher,
+                                                               'profile':profile, 'available':testavailable})
+
+    except watchervalues.DoesNotExist:
+        return HttpResponse('your IOT device is not active')
+
+
+@login_required
+def watcher_giveadvice(request, watcher_id):
+    try:
+        profile = Userprofile.objects.get(watcherid=watcher_id)
+        watcher= watchervalues.objects.get(watcherid=watcher_id)
+        try:
+            advice_objs = watcheradvicelist.objects.all().filter(watcherid=watcher_id)
+            testavailable = True
+            return render(request,'medwebapp/advicelist.html',{'watcher':watcher,
+                                                               'profile':profile, 'available':testavailable,
+                                                               'advice_objs':advice_objs})
+        except:
+            testavailable = False
+            return render(request,'medwebapp/advicelist.html',{'watcher':watcher,
+                                                               'profile':profile, 'available':testavailable})
 
     except watchervalues.DoesNotExist:
         return HttpResponse('your IOT device is not active')

@@ -87,7 +87,7 @@
 <body>
   <div class="navbar-collapse collapse">
     <ul class="nav navbar-nav navbar-left">
-      <li><a href="../"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
+      <li><img src="{% static 'medwebapp/images/halclogo.png' %}"></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="{% url 'profileupdate' profile.watcherid %}">Settings</a></li>
@@ -123,6 +123,7 @@
             <li><a href="{% url 'watcherdashboard' profile.watcherid %}">My Activity</a></li>
             <li class="active" style=" background-color:#21B2A6;"><a href="{% url 'watcherinfo' profile.watcherid %}">Device Info</a></li>
             <li><a href="{% url 'watchershare' profile.watcherid %}">Share</a></li>
+            <li><a href="{% url 'advicelist' profile.watcherid %}">My Advices</a></li>
           </ul>
 
         </div>
@@ -134,7 +135,7 @@
               <h4>your Username        : {{profile.user.username}}</h4>
               <h4>sugar Level          : {{profile.sg}}</h4>
               <h4>Blood Pressure       : {{profile.bp}}</h4>
-              </div>
+          </div>
 
 
 

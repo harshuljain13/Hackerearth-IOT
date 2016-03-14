@@ -15,14 +15,6 @@ class watchervalues(models.Model):
     spo2_content = models.IntegerField(default=0)
     ECG_pattern = models.CharField(max_length=4000)
 
-class profiles(models.Model):
-    watcherid = models.CharField(max_length =10,primary_key=True)
-    password=models.CharField(max_length=10)
-    name=models.CharField(max_length=20)
-    age = models.IntegerField(default=22)
-    sg = models.IntegerField(default=0)
-    bp = models.IntegerField(default=0)
-
 class Userprofile(models.Model):
     user = models.OneToOneField(User)
     image_url = models.CharField(max_length=1000, blank=True)
@@ -33,3 +25,8 @@ class Userprofile(models.Model):
     bp = models.CharField(max_length=3)
     def __unicode__(self):
         return self.user.username
+
+
+class watcheradvicelist(models.Model):
+    watcherid = models.CharField(max_length=10)
+    watcheradvice = models.CharField(max_length=2000)

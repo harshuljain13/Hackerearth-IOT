@@ -37,7 +37,7 @@
 
         #radial1, #radial2, #radial3, #radial4 {
             width: 40%;
-            height: 500px;
+            height: 200px;
             box-sizing: border-box;
             float: center;
         }
@@ -94,7 +94,7 @@
 <body>
   <div class="navbar-collapse collapse">
     <ul class="nav navbar-nav navbar-left">
-      <li><a href="../"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
+      <li><img src="{% static 'medwebapp/images/halclogo.png' %}"></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
         <li><a href="{% url 'profileupdate' profile.watcherid %}">Settings</a></li>
@@ -130,6 +130,7 @@
             <li class="active" style=" background-color:#21B2A6;"><a href="{% url 'watcherdashboard' profile.watcherid %}">My Activity</a></li>
             <li><a href="{% url 'watcherinfo' profile.watcherid %}">Device Info</a></li>
             <li><a href="{% url 'watchershare' profile.watcherid %}">Share</a></li>
+            <li><a href="{% url 'advicelist' profile.watcherid %}">My Advices</a></li>
           </ul>
 
         </div>
@@ -148,10 +149,11 @@
                           <h3 class="knob-title">SPO2 Level</h3>
                           <div id="radial3"></div>
                       </div>
-                  </div>
-                  <h3>Electrocardiogram</h3>
+                      <h3>Electrocardiogram</h3>
                   <div id="chartContainer" style="height: 300px; width: 100%;"></div>
                   <hr/>
+                  </div>
+
               </div>
 
 
@@ -222,30 +224,27 @@
     function start() {
 
         var rp1 = radialProgress(document.getElementById('radial1'))
-                .label("RADIAL 1")
                 .onClick(onClick1)
-                .diameter(300)
+                .diameter(200)
                 .value({{watcher.heart_rate}})
                 .render();
 
         var rp2 = radialProgress(document.getElementById('radial2'))
                 .label("RADIAL 2")
                 .onClick(onClick2)
-                .diameter(300)
+                .diameter(200)
                 .value(132)
                 .render();
 
         var rp3 = radialProgress(document.getElementById('radial3'))
-                .label("RADIAL 3")
                 .onClick(onClick3)
-                .diameter(300)
+                .diameter(200)
                 .value({{watcher.spo2_content}})
                 .render();
 
         var rp4 = radialProgress(document.getElementById('radial4'))
-                .label("RADIAL 4")
                 .onClick(onClick4)
-                .diameter(300)
+                .diameter(200)
                 .value({{watcher.resp_rate}})
                 .render();
     }
