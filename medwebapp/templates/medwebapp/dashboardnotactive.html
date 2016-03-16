@@ -143,9 +143,11 @@
                           <h3 class="knob-title">SPO2 Level</h3>
                           <div id="radial3"></div>
                       </div>
+                        <h3>Photoplethysmogram</h3>
+                  <div id="chartContainer1" style="height: 300px; width: 100%;"></div>
                       <h3>Electrocardiogram</h3>
-                  <div id="chartContainer" style="height: 300px; width: 100%;"></div>
-                  <hr/>
+                  <div id="chartContainer2" style="height: 300px; width: 100%;"></div>
+
                   </div>
 
 
@@ -248,10 +250,8 @@
 <script type="text/javascript" src="{% static 'medwebapp/canvasjs.min.js' %}"></script>
 <script type="text/javascript">
 window.onload = function () {
-	var chart = new CanvasJS.Chart("chartContainer",
+	var chart1 = new CanvasJS.Chart("chartContainer1",
 	{
-		zoomEnabled: true,
-		panEnabled: true,
 		animationEnabled: true,
 		legend: {
 			horizontalAlign: "right",
@@ -260,28 +260,58 @@ window.onload = function () {
 		axisY:{
 			includeZero: false
 		},
-		data: data,  // random generator below
+		data: data1,  // random generator below
     });
-	chart.render();
+	chart1.render();
+
+
+	var chart2 = new CanvasJS.Chart("chartContainer2",
+	{
+		animationEnabled: true,
+		legend: {
+			horizontalAlign: "right",
+			verticalAlign: "center"
+		},
+		axisY:{
+			includeZero: false
+		},
+		data: data2,  // random generator below
+    });
+	chart2.render();
 }
 
-	var limit = 200;    //increase number of dataPoints by increasing this
-
+	var limit1 = 1000;    //increase number of dataPoints by increasing this
 	var y = 0;
-	var data = []; var dataSeries = { type: "line" };
-	var dataPoints = [];
-	buffer = {{ecg}}
-	for (var i = 0; i < limit; i += 1) {
- 		y = 1023-buffer[i];
- 		dataPoints.push({
+	var data1 = [];
+    var dataSeries1 = { type: "line" };
+	var dataPoints1 = [];
+	buffer1 = {{ppg}}
+	for (var i = 0; i < limit1; i += 1) {
+ 		y1 = 1023-buffer1[i];
+ 		dataPoints1.push({
  			x: i,
- 			y: y
+ 			y: y1
  		});
  	}
- 	dataSeries.dataPoints = dataPoints;
- 	data.push(dataSeries);
+    dataSeries1.dataPoints = dataPoints1;
+ 	data1.push(dataSeries1);
+
+    var limit2 = 200;    //increase number of dataPoints by increasing this
+	var y = 0;
+	var data2 = [];
+    var dataSeries2 = { type: "line" };
+	var dataPoints2 = [];
+	buffer2 = {{ecg}}
+	for (var i = 0; i < limit2; i += 1) {
+ 		y2 = 1023-buffer2[i];
+ 		dataPoints2.push({
+ 			x: i,
+ 			y: y2
+ 		});
+ 	}
+    dataSeries2.dataPoints = dataPoints2;
+ 	data2.push(dataSeries2);
 
  	</script>
-
 </body>
 </html>
