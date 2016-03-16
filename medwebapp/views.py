@@ -5,8 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
-from .models import watchervalues,Userprofile,watcheradvicelist
-from .serializers import watcherserializer
+from .models import watchervalues,Userprofile,watcheradvicelist,watcherwave
+from .serializers import watcherserializer,watcherwaveserializer
 from .forms import Userprofileform,Userform
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import User
@@ -46,12 +46,19 @@ def watcher_restapi(request,watcher_id):
 
     ##http --json post http://127.0.0.1:8000/watcher/watcher_id/ name=value name2=value2
     if request.method == 'POST':
-        data = JSONParser().parse(request)
-        watcher_serialized = watcherserializer(data=data)
-
-        if watcher_serialized.is_valid():
-            watcher_serialized.save()
-            return HttpResponse(status=200)
+        try:
+            watcher= watchervalues.objects.get(watcherid=watcher_id)
+            data = JSONParser().parse(request)
+            watcher_serialized = watcherserializer(watcher,data=data)
+            if watcher_serialized.is_valid():
+                watcher_serialized.save()
+                return HttpResponse(status=200)
+        except watchervalues.DoesNotExist:
+            data = JSONParser().parse(request)
+            watcher_serialized = watcherserializer(data=data)
+            if watcher_serialized.is_valid():
+                watcher_serialized.save()
+                return HttpResponse(status=200)
 
     ##http --json put http://127.0.0.1:8000/watcher/watcher_id/ name=value name2=value2
     if request.method == 'PUT':
@@ -70,6 +77,50 @@ def watcher_restapi(request,watcher_id):
         try:
             watcher= watchervalues.objects.get(watcherid=watcher_id)
         except watchervalues.DoesNotExist:
+            return HttpResponse(status=404)
+        watcher.delete()
+        return HttpResponse(status=204)
+
+
+@csrf_exempt
+def watcher_restapi2(request,watcher_id):
+
+    ##http --json post http://127.0.0.1:8000/watcher2/watcher_id/ name=value name2=value2
+    if request.method == 'POST':
+        try:
+            watcher= watcherwave.objects.get(watcherid=watcher_id)
+            data = JSONParser().parse(request)
+            watcher_serialized = watcherwaveserializer(watcher,data=data)
+            if watcher_serialized.is_valid():
+                watcher_serialized.save()
+                return HttpResponse(status=200)
+
+        except watcherwave.DoesNotExist:
+            data = JSONParser().parse(request)
+            watcher_serialized = watcherwaveserializer(data=data)
+            if watcher_serialized.is_valid():
+                watcher_serialized.save()
+                return HttpResponse(status=200)
+
+
+
+    ##http --json put http://127.0.0.1:8000/watcher2/watcher_id/ name=value name2=value2
+    if request.method == 'PUT':
+        try:
+            watcher= watcherwave.objects.get(watcherid=watcher_id)
+        except watcherwave.DoesNotExist:
+            return HttpResponse(status=404)
+        data = JSONParser().parse(request)
+        watcher_serialized = watcherwaveserializer(watcher,data=data)
+        if watcher_serialized.is_valid():
+            watcher_serialized.save()
+            return HttpResponse(status=200)
+
+    ##http delete http://127.0.0.1:8000/watcher2/watcher_id/
+    if request.method == 'DELETE':
+        try:
+            watcher= watcherwave.objects.get(watcherid=watcher_id)
+        except watcherwave.DoesNotExist:
             return HttpResponse(status=404)
         watcher.delete()
         return HttpResponse(status=204)
@@ -171,12 +222,21 @@ def profile_update(request,watcher_id):
 def watcher_dashboard(request, watcher_id):
     try:
         profile = Userprofile.objects.get(watcherid=watcher_id)
-        watcher= watchervalues.objects.get(watcherid=watcher_id)
-        ecg = watcher.ECG_pattern
-        ecglist = map(int,ecg.split(" "))
-        return render(request,'medwebapp/dashboard.html',{'watcher':watcher, 'ecg':ecglist, 'profile':profile})
 
-    except watchervalues.DoesNotExist:
+        watcherwithwave = watcherwave.objects.get(watcherid=watcher_id)
+        ecg = watcherwithwave.ECG_pattern
+        ecglist = map(int,ecg.split(" "))
+        ppg = watcherwithwave.ppg_pattern
+        ppglist = map(int,ppg.split(" "))
+
+        ##algorithm
+
+
+        watcher= watchervalues.objects.get(watcherid=watcher_id)
+
+        return render(request,'medwebapp/dashboard.html',{'watcher':watcher, 'ecg':ecglist,'ppg':ppglist, 'profile':profile})
+
+    except:
         return HttpResponse('your IOT device is not active')
 
 

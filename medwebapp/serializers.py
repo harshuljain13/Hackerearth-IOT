@@ -1,7 +1,14 @@
 __author__ = 'h_hack'
 
 from rest_framework import serializers
-from .models import watchervalues
+from .models import watchervalues,watcherwave
+
+
+class watcherwaveserializer(serializers.ModelSerializer):
+    class Meta:
+        model = watcherwave
+        fields = ('id', 'watcherid','ppg_pattern','ECG_pattern')
+
 
 class watcherserializer(serializers.ModelSerializer):
     class Meta:

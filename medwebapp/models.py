@@ -5,6 +5,11 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+class watcherwave(models.Model):
+    watcherid=models.CharField(max_length=10)
+    ppg_pattern = models.CharField(max_length=40000,blank=True)
+    ECG_pattern = models.CharField(max_length=40000,blank=True)
+
 class watchervalues(models.Model):
     watcherid = models.CharField(max_length=10)
     heart_rate = models.IntegerField(default=0)
@@ -13,7 +18,7 @@ class watchervalues(models.Model):
     blood_pressure_dia = models.IntegerField(default=0)
     sugar_level = models.IntegerField(default=0)
     spo2_content = models.IntegerField(default=0)
-    ECG_pattern = models.CharField(max_length=4000)
+    ECG_pattern = models.CharField(max_length=40000,blank=True)
 
 class Userprofile(models.Model):
     user = models.OneToOneField(User)

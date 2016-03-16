@@ -272,7 +272,7 @@ window.onload = function () {
 	var dataPoints = [];
 	buffer = {{ecg}}
 	for (var i = 0; i < limit; i += 1) {
- 		y = buffer[i];
+ 		y = 1023-buffer[i];
  		dataPoints.push({
  			x: i,
  			y: y
