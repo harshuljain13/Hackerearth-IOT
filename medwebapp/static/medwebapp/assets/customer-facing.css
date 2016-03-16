@@ -77,9 +77,10 @@ img {
 
 @media (max-width: 600px) {
   .img-media{
-  width:40%;
+  width:100%;
   height:auto;
   }
+
 }
 
 
