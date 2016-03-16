@@ -10,7 +10,7 @@ from .serializers import watcherserializer,watcherwaveserializer
 from .forms import Userprofileform,Userform
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import User
-from myscripts import functions
+#from myscripts import functions
 
 import cloudinary
 import cloudinary.uploader
@@ -231,19 +231,20 @@ def watcher_dashboard(request, watcher_id):
 
         #################################################################################algorithm
 
-        hr, rr = functions.estimate(ppglist)
+        #hr, rr = functions.estimate(ppglist)
 
         #####################################################################################
 
-        try:
-            watcher= watchervalues.objects.get(watcherid=watcher_id)
-            watcher.heart_rate=hr
-            watcher.resp_rate=rr
-            watcher.save()
-        except:
-            watcher= watchervalues.objects.get(watcherid=watcher_id, heart_rate=hr, resp_rate=rr)
-            watcher.save()
+        #try:
+        #    watcher= watchervalues.objects.get(watcherid=watcher_id)
+        #    watcher.heart_rate=hr
+        #    watcher.resp_rate=rr
+        #    watcher.save()
+        #except:
+        #    watcher= watchervalues.objects.get(watcherid=watcher_id, heart_rate=hr, resp_rate=rr)
+        #    watcher.save()
 
+        watcher= watchervalues.objects.get(watcherid=watcher_id)
         return render(request,'medwebapp/dashboard.html',{'watcher':watcher, 'ecg':ecglist,'ppg':ppglist, 'profile':profile})
 
     except:
@@ -262,19 +263,20 @@ def watcher_dashboard_notactive(request, watcher_id):
 
         #################################################################################algorithm
 
-        hr, rr = functions.estimate(ppglist)
+        #hr, rr = functions.estimate(ppglist)
 
         #####################################################################################
 
-        try:
-            watcher= watchervalues.objects.get(watcherid=watcher_id)
-            watcher.heart_rate=hr
-            watcher.resp_rate=rr
-            watcher.save()
-        except:
-            watcher= watchervalues.objects.get(watcherid=watcher_id, heart_rate=hr, resp_rate=rr)
-            watcher.save()
+        #try:
+        #    watcher= watchervalues.objects.get(watcherid=watcher_id)
+        #    watcher.heart_rate=hr
+        #    watcher.resp_rate=rr
+        #    watcher.save()
+        #except:
+        #    watcher= watchervalues.objects.get(watcherid=watcher_id, heart_rate=hr, resp_rate=rr)
+        #    watcher.save()
 
+        watcher= watchervalues.objects.get(watcherid=watcher_id)
         return render(request,'medwebapp/dashboardnotactive.html',{'watcher':watcher, 'ecg':ecglist,'ppg':ppglist, 'profile':profile})
 
     except:
