@@ -33,7 +33,7 @@ class JSONResponse(HttpResponse):
 
 
 @csrf_exempt
-def watcher_restapi(request,watcher_id):
+def watcher_rest(request,watcher_id):
 
     ##http http://127.0.0.1:8000/watcher/watcher_id/
     if request.method == 'GET':
@@ -46,15 +46,14 @@ def watcher_restapi(request,watcher_id):
 
     ##http --json post http://127.0.0.1:8000/watcher/watcher_id/ name=value name2=value2
     if request.method == 'POST':
+        data = JSONParser().parse(request)
         try:
-            watcher= watchervalues.objects.get(watcherid=watcher_id)
-            data = JSONParser().parse(request)
-            watcher_serialized = watcherserializer(watcher,data=data)
+            mywatcher= watchervalues.objects.get(watcherid=watcher_id)
+            watcher_serialized = watcherserializer(mywatcher,data=data)
             if watcher_serialized.is_valid():
                 watcher_serialized.save()
                 return HttpResponse(status=200)
         except watchervalues.DoesNotExist:
-            data = JSONParser().parse(request)
             watcher_serialized = watcherserializer(data=data)
             if watcher_serialized.is_valid():
                 watcher_serialized.save()
