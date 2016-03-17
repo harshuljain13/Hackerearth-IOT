@@ -287,9 +287,7 @@ def watcher_info(request, watcher_id):
     try:
         profile = Userprofile.objects.get(watcherid=watcher_id)
         watcher= watchervalues.objects.get(watcherid=watcher_id)
-        ecg = watcher.ECG_pattern
-        ecglist = map(int,ecg.split(" "))
-        return render(request,'medwebapp/watcherinfo.html',{'watcher':watcher, 'ecg':ecglist, 'profile':profile})
+        return render(request,'medwebapp/watcherinfo.html',{'watcher':watcher, 'profile':profile})
 
     except watchervalues.DoesNotExist:
         return HttpResponse('your IOT device is not active')
@@ -300,9 +298,7 @@ def watcher_share(request, watcher_id):
     try:
         profile = Userprofile.objects.get(watcherid=watcher_id)
         watcher= watchervalues.objects.get(watcherid=watcher_id)
-        ecg = watcher.ECG_pattern
-        ecglist = map(int,ecg.split(" "))
-        return render(request,'medwebapp/share.html',{'watcher':watcher, 'ecg':ecglist, 'profile':profile})
+        return render(request,'medwebapp/share.html',{'watcher':watcher, 'profile':profile})
 
     except watchervalues.DoesNotExist:
         return HttpResponse('your IOT device is not active')
