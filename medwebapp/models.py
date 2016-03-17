@@ -10,15 +10,15 @@ class watcherwave(models.Model):
     ppg_pattern = models.CharField(max_length=40000,blank=True)
     ECG_pattern = models.CharField(max_length=40000,blank=True)
 
-class watchervalues(models.Model):
-    watcherid = models.CharField(max_length=10)
+class watcherdetails(models.Model):
+    watcherid = models.CharField(max_length=10,primary_key=True)
     heart_rate = models.IntegerField(default=0)
     resp_rate = models.IntegerField(default=0)
     blood_pressure_sys = models.IntegerField(default=0)
     blood_pressure_dia = models.IntegerField(default=0)
     sugar_level = models.IntegerField(default=0)
     spo2_content = models.IntegerField(default=0)
-    haemoglobin = models.IntegerField(default=0)
+    hb = models.IntegerField(default=0)
 
 class Userprofile(models.Model):
     user = models.OneToOneField(User)
