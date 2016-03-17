@@ -18,7 +18,7 @@ class watchervalues(models.Model):
     blood_pressure_dia = models.IntegerField(default=0)
     sugar_level = models.IntegerField(default=0)
     spo2_content = models.IntegerField(default=0)
-    ECG_pattern = models.CharField(max_length=40000,blank=True)
+    haemoglobin = models.IntegerField(default=0)
 
 class Userprofile(models.Model):
     user = models.OneToOneField(User)
