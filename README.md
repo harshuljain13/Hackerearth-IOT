@@ -3,6 +3,9 @@
 ## Quick view of web app hosted on Heroku
 ```
 https://dry-brushlands-94162.herokuapp.com
+
+userid: hjain20
+password: 12345
 ```
 
 ## How to Deploy server locally
