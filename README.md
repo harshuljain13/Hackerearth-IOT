@@ -1,5 +1,10 @@
 # Hackerearth-IOT-hackathon
 
+## Quick view of web app hosted on Heroku
+```
+https://dry-brushlands-94162.herokuapp.com
+```
+
 ## How to Deploy server locally
 ```
 git clone https://github.com/harshul1610/Hackerearth-IOT.git
