@@ -62,6 +62,22 @@
             fill: #f0a417;
         }
 
+        #radial5 .arc {
+            stroke-weight: 0.1;
+            fill: #f0a417;
+        }
+
+        #radial6 .arc {
+            stroke-weight: 0.1;
+            fill: #f0a417;
+        }
+
+        #radial6 .arc2 {
+            stroke-weight: 0.1;
+            fill: #b00d08;
+        }
+
+
         .selectedRadial {
             border-radius: 3px;
             background: #f4f4f4;
@@ -144,6 +160,19 @@
                           <h3 class="knob-title">SPO2 Level</h3>
                           <div id="radial3"></div>
                       </div>
+                      <div class="col-sm-4">
+                          <h3 class="knob-title">Haemoglobin</h3>
+                          <div id="radial5"></div>
+                      </div>
+                      <div class="col-sm-4">
+                          <h3 class="knob-title">Blood Pressure Systolic</h3>
+                          <div id="radial2"></div>
+                      </div>
+                      <div class="col-sm-4">
+                          <h3 class="knob-title">Blood Pressure Diastolic</h3>
+                          <div id="radial6"></div>
+                      </div>
+
                       <h3>Photoplethysmogram</h3>
                   <div id="chartContainer1" style="height: 300px; width: 100%;"></div>
                       <h3>Electrocardiogram</h3>
@@ -182,8 +211,10 @@
 
     var radial1=d3.select(document.getElementById('radial1'));
     var radial2=d3.select(document.getElementById('radial2'));
+    var radial6=d3.select(document.getElementById('radial6'));
     var radial3=d3.select(document.getElementById('radial3'));
     var radial4=d3.select(document.getElementById('radial4'));
+    var radial5=d3.select(document.getElementById('radial5'));
 
     start();
 
@@ -197,6 +228,11 @@
         radial2.attr("class","selectedRadial");
     }
 
+    function onClick6() {
+        deselect();
+        radial6.attr("class","selectedRadial");
+    }
+
     function onClick3() {
         deselect();
         radial3.attr("class","selectedRadial");
@@ -207,6 +243,11 @@
         radial4.attr("class","selectedRadial");
     }
 
+    function onClick5() {
+        deselect();
+        radial5.attr("class","selectedRadial");
+    }
+
     function labelFunction(val,min,max) {
 
     }
@@ -214,8 +255,10 @@
     function deselect() {
         radial1.attr("class","radial");
         radial2.attr("class","radial");
+        radial6.attr("class","radial");
         radial3.attr("class","radial");
         radial4.attr("class","radial");
+        radial5.attr("class","radial");
     }
 
     function start() {
@@ -227,10 +270,15 @@
                 .render();
 
         var rp2 = radialProgress(document.getElementById('radial2'))
-                .label("RADIAL 2")
                 .onClick(onClick2)
                 .diameter(200)
-                .value(132)
+                .value({{watcher.blood_pressure_sys}})
+                .render();
+
+        var rp6 = radialProgress(document.getElementById('radial6'))
+                .onClick(onClick6)
+                .diameter(200)
+                .value({{watcher.blood_pressure_dia}})
                 .render();
 
         var rp3 = radialProgress(document.getElementById('radial3'))
@@ -243,6 +291,12 @@
                 .onClick(onClick4)
                 .diameter(200)
                 .value({{watcher.resp_rate}})
+                .render();
+
+        var rp5 = radialProgress(document.getElementById('radial5'))
+                .onClick(onClick5)
+                .diameter(200)
+                .value({{watcher.hb}})
                 .render();
     }
 
