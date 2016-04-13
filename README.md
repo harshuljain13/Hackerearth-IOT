@@ -1,6 +1,6 @@
 # Hackerearth-IOT-hackathon
 
-## Quick view of web app hosted on Heroku
+## [Quick view of web app hosted on Heroku](https://dry-brushlands-94162.herokuapp.com)
 ```
 https://dry-brushlands-94162.herokuapp.com
 
