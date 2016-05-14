@@ -13,5 +13,6 @@ password: 12345
 git clone https://github.com/harshul1610/Hackerearth-IOT.git
 cd Hackerearth-IOT
 pip install -r requirements.txt
+pip install -r requirements2.txt
 ./manage.py runserver 0.0.0.0:8000
 ```
