@@ -62,7 +62,7 @@ def watcher_rest(request,watcher_id):
             watcher_serialized.save()
             return HttpResponse(status=200)
 
-    ##http delete http://127.0.0.1:8000/watcher/watcher_id/
+    ##http delete http://127.0.0.1:8000/watcherpost/watcher_id/
     if request.method == 'DELETE':
         try:
             watcher= watcherdetails.objects.get(watcherid=watcher_id)
@@ -79,7 +79,6 @@ def watcher_rest(request,watcher_id):
             return HttpResponse(status=404)
         serialized_watcher = watcherserializer(watcher)
         return JSONResponse(serialized_watcher.data)
-
 
 @csrf_exempt
 def watcher_restapi2(request,watcher_id):
@@ -123,6 +122,15 @@ def watcher_restapi2(request,watcher_id):
             return HttpResponse(status=404)
         watcher.delete()
         return HttpResponse(status=204)
+
+    ##http http://127.0.0.1:8000/watcher2/watcher_id/
+    if request.method == 'GET':
+        try:
+            watcher= watcherwave.objects.get(watcherid=watcher_id)
+        except watcherwave.DoesNotExist:
+            return HttpResponse(status=404)
+        serialized_watcherwave = watcherwaveserializer(watcher)
+        return JSONResponse(serialized_watcherwave.data)
 
 
 @csrf_exempt
