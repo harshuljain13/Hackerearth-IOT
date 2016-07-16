@@ -81,7 +81,7 @@ fileObject.close()
 N1=3111
 L=10
 j=1
-T=0.08
+T=0.24
 ##N=100
 ##y=np.empty(100)
 x=np.empty(100)
@@ -93,7 +93,7 @@ def parameter(y,yn,ref):
     htbt, rrt=estimate(y,yn,ref)
     L=10
     j=1
-    T=0.08
+    T=0.24
     ##N=100
     ##y=np.empty(100)
     N=len(y)
