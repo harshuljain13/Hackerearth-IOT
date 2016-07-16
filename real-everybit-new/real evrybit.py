@@ -90,7 +90,7 @@ qw=0
 
 def parameter(y,yn,ref):
     os.system('CLS')
-    htbt, rrt=estimate(y,yn,ref)
+    htbt, rrt=estimate(y)
     L=10
     j=1
     T=0.24
@@ -122,10 +122,10 @@ def parameter(y,yn,ref):
     d=np.empty(N-L)
     j=1
     for cntr in range(L,N):
-        d[j-1]=y[cntr]
+        d[j-1]= y[cntr]
         j=j+1
     #formation of D
-    D=np.empty([N-L,L])
+    D=np.empty([N-L, L])
     r=1
     c=1
     for cntr in range(1,N-L+1):
@@ -231,7 +231,7 @@ def parameter(y,yn,ref):
     print bp1
     bp1_dia=str(bp1[1])[:5]
     bp1_sys = str(bp1[2])[:5]
-    print "Blood Pressure [normal diastolic < 80, systolic < 140] : " + str(bp1[1]) + " " + str(bp1[2])
+    #print "Blood Pressure [normal diastolic < 80, systolic < 140] : " + str(bp1[1]) + " " + str(bp1[2])
     #printing forest results
     age=21
     sex=1
@@ -241,27 +241,18 @@ def parameter(y,yn,ref):
     output=forest.predict(test_data)
 
 
-    print " Glucose level[before eating 70-90 after eating < 130  : "+str(output)+' '
+    #print " Glucose level[before eating 70-90 after eating < 130  : "+str(output)+' '
 
     wow=110-15*spO2
 
-    print "Oxygen Saturation [normal > 94]                        : " + str(wow)
+    #print "Oxygen Saturation [normal > 94]                        : " + str(wow)
 
     return htbt, rrt, bp1_sys,bp1_dia, str(output), wow
 ##................................................................##
     
-def estimate(y,y1,ref1):
-    data2=[]
-    sas=[]
-    sdelay=[]
-    ##nT=5                  ##samples in one time period
-    Fs=12.5                 #500#sampling frequency in Hz, sampling interval=2ms
-##    window=int(Fs)        ##samples per Beta
-    window =30
-    order=10
-    boundary=window-1       ##correction for dividion
-    length=len(y)
-    wave=thinkdsp.Wave(ys=y,framerate=Fs)
+def estimate(data):
+    length=len(data)
+    wave=thinkdsp.Wave(ys=data,framerate=Fs)
     spectrum=wave.make_spectrum()
     spectrum_heart=wave.make_spectrum()
     spectrum_resp=wave.make_spectrum()
@@ -269,139 +260,27 @@ def estimate(y,y1,ref1):
     fft_mag=list(np.absolute(spectrum.hs))
     fft_length= len(fft_mag)
 
-    spectrum_heart.high_pass(cutoff=0.5,factor=0.001)
-    spectrum_heart.low_pass(cutoff=4,factor=0.001)
+    spectrum_heart.high_pass(cutoff=0.5,factor=0)
+    spectrum_heart.low_pass(cutoff=4,factor=0)
     fft_heart=list(np.absolute(spectrum_heart.hs))
-    spectrum_resp.high_pass(cutoff=0.15,factor=0)
-    spectrum_resp.low_pass(cutoff=0.4,factor=0)
-    fft_resp=list(np.absolute(spectrum_resp.hs))
-    
 
     max_fft_heart=max(fft_heart)
     heart_sample=fft_heart.index(max_fft_heart)
-    fund_freq=heart_sample*Fs/length*60
-##    fund_freq-=0.2*fund_freq
-    nT=int(fund_freq/60*Fs)
-    max_fft_resp=max(fft_resp)
-    resp_sample=fft_resp.index(max_fft_resp)
-    rr=resp_sample*Fs/length*60
-    
-    ## FIRST ADAPTIVE FILTER
-    x1,e1,w1=adf.nlms(ref1,y,order,1)
-    x2,e2,w2=adf.nlms(ref1,y1,order,1)
-    
-    ## calculating fundamental time period of input signal x1
-    length=len(x1)
-    wave=thinkdsp.Wave(ys=x1,framerate=Fs)
-    spectrum=wave.make_spectrum()
-    spectrum_heart=wave.make_spectrum()
-    spectrum_resp=wave.make_spectrum()
+    hr=heart_sample*Fs/length*60
 
-    fft_mag=list(np.absolute(spectrum.hs))
-    fft_length= len(fft_mag)
-
-    spectrum_heart.high_pass(cutoff=0.5,factor=0.001)
-    spectrum_heart.low_pass(cutoff=4,factor=0.001)
-    fft_heart=list(np.absolute(spectrum_heart.hs))
     spectrum_resp.high_pass(cutoff=0.15,factor=0)
-    spectrum_resp.low_pass(cutoff=0.4,factor=0)
+    spectrum_resp.low_pass(cutoff=0.5,factor=0)
     fft_resp=list(np.absolute(spectrum_resp.hs))
 
-    max_fft_heart=max(fft_heart)
-    heart_sample=fft_heart.index(max_fft_heart)
-    fund_freq=heart_sample*Fs/length*60
-    nT=int(fund_freq/60*Fs)
     max_fft_resp=max(fft_resp)
     resp_sample=fft_resp.index(max_fft_resp)
     rr=resp_sample*Fs/length*60
 
-    ##Second Filter algorithm
 
-    ex1s=.0
-    ex2s=.0
-    ex1x2=.0
-    esas=.0
-    esdx1=.0
-    esdx2=.0
-    ess=.0
-    esds=.0
-    essd=.0
-    rv=.8
-    alpha=.0
-    beta=[]
-    length=length-length%window
-    ## calculating first/initial rv
-    for i in range(0,nT):
-        sas.append(x1[i]-rv*x2[i])  ##getting values of sas till nT for sdelay
-        ex1s=(ex1s*i+x1[i]**2)/(i+1)
-        ex2s=(ex2s*i+x2[i]**2)/(i+1)
-        ess=(ess*i+sas[i]**2)/(i+1)
-        esdx1=(esdx1*i+x1[i]*sas[i])/(i+1)
-        esdx2=(esdx2*i+x2[i]*sas[i])/(i+1)
-        ex1x2=(ex1x2*i+x1[i]*x2[i])/(i+1)
-        if((ex2s*esdx1 - ex1x2*esdx2)):
-            rv = (ex1x2*esdx1 - ex1s*esdx2)/(ex2s*esdx1 - ex1x2*esdx2)    
-    ##    print esdx1,ex2s,esdx1,ex1x2,esdx2
-    ##    print (ex2s*esdx1 - ex1x2*esdx2),rv
-
-    ##calculating rv,alpha and updating beta every 20 samples
-    for i in range(nT,length-window):
-        for j in range(0,window):    
-            sas.append(x1[i]-rv*x2[i])
-            ex1s=(ex1s*j+x1[i]**2)/(j+1)
-            ex2s=(ex2s*j+x2[i]**2)/(j+1)
-            ess=(ess*j+sas[i]**2)/(j+1)
-            esdx1=(esdx1*j+x1[i]*sas[i-nT])/(j+1)
-            esdx2=(esdx2*j+x2[i]*sas[i-nT])/(j+1)
-            ex1x2=(ex1x2*j+x1[i]*x2[i])/(j+1)
-        ##        esds=(esds*j+sas[i-nT]**2)/(j+1)
-        ##        essd=(essd*j+sas[i]*sas[i-nT])/(j+1)
-            i=i+1
-            
-        if((ex2s*esdx1 - ex1x2*esdx2)):
-            rv = (ex1x2*esdx1 - ex1s*esdx2)/(ex2s*esdx1 - ex1x2*esdx2)
-        ##  b = essd/esds
-        alpha = (ex1s-rv*ex1x2)/ess
-        for j in range(0,window):
-            beta.append((rv*alpha)/(1-alpha))
-    ##    print beta
-        i=i-1
-
-    venous_ref=[]
-    for i in range(0,length-nT):
-        venous_ref.append(x1[nT+i]- beta[i]*x2[nT+i])
-
-        
-    xf1,ef1,wf1=adf.nlms(venous_ref,x2[nT:],2*order,1)
-
-    data2= data2 + list(xf1)
-
-    length=len(data2)
-    wave=thinkdsp.Wave(ys=data2,framerate=Fs)
-    spectrum=wave.make_spectrum()
-    spectrum_heart=wave.make_spectrum()
-    spectrum_resp=wave.make_spectrum()
-
-    fft_mag=list(np.absolute(spectrum.hs))
-    fft_length= len(fft_mag)
-
-    spectrum_heart.high_pass(cutoff=0.7,factor=0.001)
-    spectrum_heart.low_pass(cutoff=4,factor=0.001)
-    fft_heart=list(np.absolute(spectrum_heart.hs))
-    spectrum_resp.high_pass(cutoff=0.15,factor=0)
-    spectrum_resp.low_pass(cutoff=0.4,factor=0)
-    fft_resp=list(np.absolute(spectrum_resp.hs))
-
-    max_fft_heart=max(fft_heart)
-    heart_sample=fft_heart.index(max_fft_heart)
-    fund_freq=heart_sample*Fs/length*60
-    nT=int(fund_freq/60*Fs)
-    max_fft_resp=max(fft_resp)
-    resp_sample=fft_resp.index(max_fft_resp)
-    rr=resp_sample*Fs/length*60
-    print "Heart rate       [normal 60-100]                       : ", fund_freq,'BPM'
-    print "Respiration Rate [normal 10-20]                        : ", rr, "RPM"
-    return fund_freq,rr
+    if hr<10:
+        return hr, 0
+    else:
+        return hr,rr
 
 
 ##...................................................................##        
@@ -423,15 +302,15 @@ def hemoglobin(red_max,ir_max):
 ##...................................................................##      
 
 if __name__ == '__main__':
-    ser = serial.Serial('COM9',9600)
-    ##ser=open('Patients/1.txt','r',1)
+    ##ser = serial.Serial('COM9',9600)
+    ser=open('Patients/1.txt','r',1)
     time=float (0)
     count=0
     y=[]
     yn=[]
     ref=[]
     a23=[]
-    Fs=4.17
+    Fs=12.5
     n=1
     red_max=0
     ir_max=0
