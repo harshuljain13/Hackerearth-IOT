@@ -25,7 +25,7 @@ void setup() {
 
 ISR(TIMER0_COMPA_vect){        // triggered when Timer2 counts to 250(16 ms)
   count++;
-  if(count==5)//send only after 80 ms.
+  if(count==15)//send only after 80 ms.
   {
   count=0;
   cli();                                      // disable interrupts while we do this
