@@ -310,7 +310,7 @@ if __name__ == '__main__':
     yn=[]
     ref=[]
     a23=[]
-    Fs=12.5
+    Fs=4.17
     n=1
     red_max=0
     ir_max=0
